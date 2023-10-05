@@ -13,7 +13,7 @@ env:
   
   BASE_ENVIRONMENT: 'development'
   ENVIRONMENT_TYPE: 'development'
-  SCORE_HUMANITEC_VERSION: 0.7.0
+  SCORE_HUMANITEC_VERSION: 0.8.0
   ENVIRONMENT_ID: pr-${{ github.event.number }}
   ENVIRONMENT_NAME: PR-${{ github.event.number }}
 
@@ -89,6 +89,7 @@ jobs:
               --app ${{ env.APP_NAME }} \
               --env ${{ env.ENVIRONMENT_ID }} \
               --property containers.frontend.image=$AWS_ECR/$IMAGE:$TAG \
+              --message "$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "${{ github.event.pull_request.commits_url }}?per_page=10" | jq -r .[-1].commit.message)" \
               | tee score_output.json
       - name: Wait for deployment
         run: |
